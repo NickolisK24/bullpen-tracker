@@ -233,5 +233,5 @@ This is primarily a personal portfolio project, but if you’re adapting it:
 ## Contact
 
 Built by **Nickolis Kacludis**.  
-Portfolio: _[your site]_  
-Email: _[your email]_
+Portfolio: https://nickolis-kacludis-portfolio.vercel.app/
+Email: nickoliskacludis@gmail.com

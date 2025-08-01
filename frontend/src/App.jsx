@@ -38,7 +38,7 @@ export default function App() {
   // Fetch pitcher data
   useEffect(() => {
     setLoading(true);
-    fetch('http://localhost:5000/api/pitchers')
+    fetch('https://bullpen-tracker.onrender.com/')
       .then(res => res.json())
       .then(data => {
         setPitchers(data);
