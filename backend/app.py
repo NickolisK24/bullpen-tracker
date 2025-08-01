@@ -4,6 +4,8 @@ import os
 import csv
 from datetime import datetime
 import logging
+from werkzeug.utils import secure_filename
+import traceback
 
 from pitcher import Pitcher
 from fatigue_utils import fatigue_color
@@ -27,6 +29,11 @@ CSV_FILENAME = "game_logs.csv"
 CSV_PATH = os.path.join(DATA_DIR, CSV_FILENAME)
 
 REQUIRED_COLUMNS = {"name", "team", "handedness", "date", "pitch_count"}
+ALLOWED_EXTENSIONS = {"csv"}
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def load_pitchers():
@@ -71,7 +78,6 @@ def load_pitchers():
                 if name not in pitchers:
                     pitchers[name] = Pitcher(name, team, handedness)
                 else:
-                    # ensure handedness is set if not previously
                     if not getattr(pitchers[name], "handedness", "") and handedness:
                         pitchers[name].handedness = handedness
                 pitchers[name].add_game(date_str, pitch_count)
@@ -80,6 +86,13 @@ def load_pitchers():
                 continue
 
     return pitchers, errors
+
+
+@app.route("/")
+def index():
+    return jsonify({
+        "message": "Bullpen Buddy backend is running. Use /api/health, /api/pitchers, etc."
+    }), 200
 
 
 @app.route("/api/health", methods=["GET"])
@@ -176,31 +189,36 @@ def get_pitcher_by_name(normalized_name):
 
 @app.route("/api/upload", methods=["POST"])
 def upload_csv():
-    if "file" not in request.files:
-        return jsonify({"error": "No file part in request"}), 400
-
-    file = request.files["file"]
-
-    if file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
-
-    if not file.filename.lower().endswith(".csv"):
-        return jsonify({"error": "Only CSV files are allowed"}), 400
-
-    os.makedirs(DATA_DIR, exist_ok=True)
-    save_path = os.path.join(DATA_DIR, CSV_FILENAME)
-
     try:
-        file.save(save_path)
-    except Exception as e:
-        logging.error("Error saving uploaded CSV: %s", e)
-        return jsonify({"error": "Failed to save file"}), 500
+        if "file" not in request.files:
+            logging.warning("Upload attempt without 'file' part. Keys: %s", list(request.files.keys()))
+            return jsonify({"error": "No file part in request"}), 400
 
-    return jsonify({"message": "File uploaded successfully"}), 200
+        file = request.files["file"]
+        if file.filename == "":
+            logging.warning("Upload attempt with empty filename.")
+            return jsonify({"error": "No selected file"}), 400
+
+        if not allowed_file(file.filename):
+            logging.warning("Upload attempt with disallowed filename: %s", file.filename)
+            return jsonify({"error": "Only CSV files are allowed"}), 400
+
+        filename = secure_filename(file.filename)
+        os.makedirs(DATA_DIR, exist_ok=True)
+        save_path = os.path.join(DATA_DIR, CSV_FILENAME)  # canonical name used by loader
+
+        file.save(save_path)
+        logging.info("CSV uploaded and saved to %s (original: %s)", save_path, filename)
+        return jsonify({"message": "File uploaded successfully"}), 200
+
+    except Exception as e:
+        tb = traceback.format_exc()
+        logging.error("Exception during upload: %s\n%s", str(e), tb)
+        return jsonify({"error": "Failed to save file", "details": str(e)}), 500
 
 
 if __name__ == "__main__":
     host = os.getenv("FLASK_HOST", "0.0.0.0")
-    port = int(os.getenv("FLASK_PORT", 5000))
+    port = int(os.getenv("PORT") or os.getenv("FLASK_PORT", 5000))
     debug = os.getenv("FLASK_DEBUG", "1") in ("1", "true", "True")
     app.run(host=host, port=port, debug=debug)
