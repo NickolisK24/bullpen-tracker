@@ -4,14 +4,14 @@ A lightweight **MLB pitcher fatigue tracking tool** built as a portfolio project
 It ingests historical pitch count data, computes a simple fatigue score per pitcher, and exposes that via a REST API for a React frontend to visualize and filter. This can be used by coaches, analysts, or front office staff to monitor workload and flag overuse risk.
 
 ## Live Demo
-*(If deployed, put your live demo URL here, e.g.)*  
-https://your-deployment.example.com
+
+https://bullpen-tracker.vercel.app/
 
 ## Tech Stack
 
-- **Backend:** Python, Flask, flask-cors  
-- **Frontend:** React (can be plain JS or TypeScript), Tailwind CSS  
-- **Data:** CSV upload of game logs (pitch counts, dates)  
+- **Backend:** Python, Flask, flask-cors
+- **Frontend:** React (can be plain JS or TypeScript), Tailwind CSS
+- **Data:** CSV upload of game logs (pitch counts, dates)
 - **Deployment candidates:** Vercel / Netlify (frontend), Render / Railway / Docker (backend)
 
 ## Features
@@ -28,6 +28,7 @@ https://your-deployment.example.com
 Fatigue is computed with a heuristic decay model:
 
 For each appearance:
+
 ```
 fatigue_contribution = pitch_count * max(0.2, 1 - days_rest * 0.15)
 ```
@@ -71,6 +72,7 @@ python app.py
 ```
 
 #### Environment variables (optional)
+
 - `FRONTEND_ORIGIN` — allowed origin for CORS (default: `http://localhost:5173`)
 - `FLASK_HOST` — host to bind (default: `0.0.0.0`)
 - `FLASK_PORT` — port (default: `5000`)
@@ -113,13 +115,13 @@ Form-data: file=<your CSV file>
 
 The backend expects a CSV file named (or uploaded to become) `game_logs.csv` with these columns:
 
-| Column       | Description                          | Format / Notes                |
-|--------------|--------------------------------------|-------------------------------|
-| `name`       | Pitcher full name                    | e.g., "Jacob deGrom"          |
-| `team`       | Team name                            | e.g., "New York Mets"         |
-| `handedness` | Throws handedness                   | "R" or "L" (optional for logic)|
-| `date`       | Date of appearance                  | `YYYY-MM-DD`                  |
-| `pitch_count`| Number of pitches thrown            | Integer                      |
+| Column        | Description              | Format / Notes                  |
+| ------------- | ------------------------ | ------------------------------- |
+| `name`        | Pitcher full name        | e.g., "Jacob deGrom"            |
+| `team`        | Team name                | e.g., "New York Mets"           |
+| `handedness`  | Throws handedness        | "R" or "L" (optional for logic) |
+| `date`        | Date of appearance       | `YYYY-MM-DD`                    |
+| `pitch_count` | Number of pitches thrown | Integer                         |
 
 Example row:
 
@@ -182,34 +184,40 @@ frontend/
 ## Future Enhancements
 
 ### Data & Insight
+
 - **Fatigue Trends:** Show time series of a pitcher’s fatigue over their past N appearances.
 - **Comparisons:** Side-by-side fatigue comparison between multiple pitchers or against a league average baseline.
 - **Injury Risk Score:** Extend the heuristic into a learned or multi-factor model (e.g., logistic regression) to estimate injury/overuse probability.
 - **Adaptive Recovery:** Incorporate rest recommendations based on upcoming schedule and current fatigue.
 
 ### Real-time & External Integration
+
 - **Live MLB Data:** Pull pitch counts and appearance data from public APIs / scraping to auto-update without manual CSV uploads.
 - **Schedule-awareness:** Cross-reference rotation schedules to flag when a fatigued pitcher is due to start soon.
 - **Webhook/Notification System:** Alert on threshold crossings (e.g., fatigue > X) via email, Slack, or browser push.
 
 ### User/UX Features
+
 - **Persistent Views:** Save favorite teams or custom filters in localStorage or user profiles.
 - **Exportable Reports:** PDF/CSV summary of current fatigue status for a scouting report.
 - **Dark Mode / Theming:** Toggleable theme that persists across sessions.
 - **Search Autocomplete:** Typeahead for pitcher names.
 
 ### Engineering & Deployment
+
 - **Dockerization:** Containerize backend and frontend for reproducible deployments.
 - **Monorepo / Unified CLI:** Simplify `clone && run` with a one-command bootstrap (`make`, `setup.sh`).
 - **Authentication:** If extended to user-specific saved views, add lightweight auth (OAuth / JWT).
 - **Rate Limiting & Caching:** Protect public endpoints and speed up repeated queries.
 
 ### Code Quality
+
 - **TypeScript migration (frontend):** Increase robustness of props, API contracts.
 - **Schema validation:** Use tools like `pydantic` for strict backend input validation.
 - **Swagger / OpenAPI docs:** Auto-generate API documentation for easier adoption.
 
 ### Accessibility & Polishing
+
 - Keyboard navigable interface.
 - ARIA labels and screen reader support.
 - Mobile responsiveness.
@@ -226,6 +234,7 @@ frontend/
 ## Contribution
 
 This is primarily a personal portfolio project, but if you’re adapting it:
+
 - Fork the repo.
 - Follow the setup above.
 - Open a PR with feature descriptions and test coverage.
