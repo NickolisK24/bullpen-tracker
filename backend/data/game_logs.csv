@@ -1,65 +1,65 @@
 name,team,handedness,date,pitch_count
-Jacob deGrom,Mets,R,2025-07-01,95
-Jacob deGrom,Mets,R,2025-06-27,88
-Jacob deGrom,Mets,R,2025-06-24,102
-Jacob deGrom,Mets,R,2025-06-20,90
-Max Scherzer,Phillies,R,2025-07-01,100
-Max Scherzer,Phillies,R,2025-06-28,96
-Max Scherzer,Phillies,R,2025-06-25,110
-Max Scherzer,Phillies,R,2025-06-22,104
-Shohei Ohtani,Angels,R,2025-07-01,85
-Shohei Ohtani,Angels,R,2025-06-26,112
-Shohei Ohtani,Angels,R,2025-06-23,97
-Shohei Ohtani,Angels,R,2025-06-19,105
-Clayton Kershaw,Dodgers,L,2025-07-01,78
-Clayton Kershaw,Dodgers,L,2025-06-28,91
-Clayton Kershaw,Dodgers,L,2025-06-25,94
-Clayton Kershaw,Dodgers,L,2025-06-21,88
-Gerrit Cole,Yankees,R,2025-07-01,92
-Gerrit Cole,Yankees,R,2025-06-27,99
-Gerrit Cole,Yankees,R,2025-06-23,87
-Gerrit Cole,Yankees,R,2025-06-19,103
-Spencer Strider,Braves,R,2025-07-01,101
-Spencer Strider,Braves,R,2025-06-28,108
-Spencer Strider,Braves,R,2025-06-24,105
-Spencer Strider,Braves,R,2025-06-20,97
-Zac Gallen,D-backs,R,2025-07-01,86
-Zac Gallen,D-backs,R,2025-06-27,90
-Zac Gallen,D-backs,R,2025-06-23,95
-Zac Gallen,D-backs,R,2025-06-19,98
-Logan Webb,Giants,R,2025-07-01,89
-Logan Webb,Giants,R,2025-06-27,85
-Logan Webb,Giants,R,2025-06-23,92
-Logan Webb,Giants,R,2025-06-19,96
-Blake Snell,Padres,R,2025-07-01,99
-Blake Snell,Padres,R,2025-06-28,102
-Blake Snell,Padres,R,2025-06-24,106
-Blake Snell,Padres,R,2025-06-20,94
-Justin Verlander,Astros,R,2025-07-01,84
-Justin Verlander,Astros,R,2025-06-27,88
-Justin Verlander,Astros,R,2025-06-23,93
-Justin Verlander,Astros,R,2025-06-19,90
-Shane Bieber,Guardians,R,2025-07-01,91
-Shane Bieber,Guardians,R,2025-06-27,89
-Shane Bieber,Guardians,R,2025-06-23,96
-Shane Bieber,Guardians,R,2025-06-19,92
-Aaron Nola,Phillies,R,2025-07-01,95
-Aaron Nola,Phillies,R,2025-06-28,97
-Aaron Nola,Phillies,R,2025-06-24,99
-Aaron Nola,Phillies,R,2025-06-20,101
-Dylan Cease,White Sox,R,2025-07-01,93
-Dylan Cease,White Sox,R,2025-06-28,87
-Dylan Cease,White Sox,R,2025-06-24,90
-Dylan Cease,White Sox,R,2025-06-20,92
-Julio Urías,Dodgers,R,2025-07-01,88
-Julio Urías,Dodgers,R,2025-06-28,85
-Julio Urías,Dodgers,R,2025-06-24,84
-Julio Urías,Dodgers,R,2025-06-20,82
-Freddy Peralta,Brewers,R,2025-07-01,90
-Freddy Peralta,Brewers,R,2025-06-28,93
-Freddy Peralta,Brewers,R,2025-06-24,96
-Freddy Peralta,Brewers,R,2025-06-20,89
-Lucas Giolito,Red Sox,R,2025-07-01,87
-Lucas Giolito,Red Sox,R,2025-06-27,92
-Lucas Giolito,Red Sox,R,2025-06-23,95
-Lucas Giolito,Red Sox,R,2025-06-19,97
+Jacob deGrom,Mets,R,7/29/2025,95
+Jacob deGrom,Mets,R,6/27/2025,88
+Jacob deGrom,Mets,R,6/24/2025,102
+Jacob deGrom,Mets,R,6/20/2025,90
+Max Scherzer,Phillies,R,7/1/2025,100
+Max Scherzer,Phillies,R,6/28/2025,96
+Max Scherzer,Phillies,R,6/25/2025,110
+Max Scherzer,Phillies,R,6/22/2025,104
+Shohei Ohtani,Angels,R,7/1/2025,85
+Shohei Ohtani,Angels,R,6/26/2025,112
+Shohei Ohtani,Angels,R,6/23/2025,97
+Shohei Ohtani,Angels,R,6/19/2025,105
+Clayton Kershaw,Dodgers,L,7/1/2025,78
+Clayton Kershaw,Dodgers,L,6/28/2025,91
+Clayton Kershaw,Dodgers,L,6/25/2025,94
+Clayton Kershaw,Dodgers,L,6/21/2025,88
+Gerrit Cole,Yankees,R,7/1/2025,92
+Gerrit Cole,Yankees,R,6/27/2025,99
+Gerrit Cole,Yankees,R,6/23/2025,87
+Gerrit Cole,Yankees,R,6/19/2025,103
+Spencer Strider,Braves,R,7/1/2025,101
+Spencer Strider,Braves,R,6/28/2025,108
+Spencer Strider,Braves,R,6/24/2025,105
+Spencer Strider,Braves,R,6/20/2025,97
+Zac Gallen,D-backs,R,7/1/2025,86
+Zac Gallen,D-backs,R,6/27/2025,90
+Zac Gallen,D-backs,R,6/23/2025,95
+Zac Gallen,D-backs,R,6/19/2025,98
+Logan Webb,Giants,R,7/1/2025,89
+Logan Webb,Giants,R,6/27/2025,85
+Logan Webb,Giants,R,6/23/2025,92
+Logan Webb,Giants,R,6/19/2025,96
+Blake Snell,Padres,R,7/1/2025,99
+Blake Snell,Padres,R,6/28/2025,102
+Blake Snell,Padres,R,6/24/2025,106
+Blake Snell,Padres,R,6/20/2025,94
+Justin Verlander,Astros,R,7/1/2025,84
+Justin Verlander,Astros,R,6/27/2025,88
+Justin Verlander,Astros,R,6/23/2025,93
+Justin Verlander,Astros,R,6/19/2025,90
+Shane Bieber,Guardians,R,7/1/2025,91
+Shane Bieber,Guardians,R,6/27/2025,89
+Shane Bieber,Guardians,R,6/23/2025,96
+Shane Bieber,Guardians,R,6/19/2025,92
+Aaron Nola,Phillies,R,7/1/2025,95
+Aaron Nola,Phillies,R,6/28/2025,97
+Aaron Nola,Phillies,R,6/24/2025,99
+Aaron Nola,Phillies,R,6/20/2025,101
+Dylan Cease,White Sox,R,7/1/2025,93
+Dylan Cease,White Sox,R,6/28/2025,87
+Dylan Cease,White Sox,R,6/24/2025,90
+Dylan Cease,White Sox,R,6/20/2025,92
+Julio Urías,Dodgers,R,7/1/2025,88
+Julio Urías,Dodgers,R,6/28/2025,85
+Julio Urías,Dodgers,R,6/24/2025,84
+Julio Urías,Dodgers,R,6/20/2025,82
+Freddy Peralta,Brewers,R,7/1/2025,90
+Freddy Peralta,Brewers,R,6/28/2025,93
+Freddy Peralta,Brewers,R,6/24/2025,96
+Freddy Peralta,Brewers,R,6/20/2025,89
+Lucas Giolito,Red Sox,R,7/1/2025,87
+Lucas Giolito,Red Sox,R,6/27/2025,92
+Lucas Giolito,Red Sox,R,6/23/2025,95
+Lucas Giolito,Red Sox,R,6/19/2025,97

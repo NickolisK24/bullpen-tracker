@@ -18,9 +18,10 @@ logging.basicConfig(
 
 app = Flask(__name__)
 
-# CORS: allow origin from environment or fallback to localhost frontend default
-frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
-CORS(app, origins=[frontend_origin])
+# CORS: allow origins from environment variable or default local dev.
+frontend_origin_env = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
+origins = [o.strip() for o in frontend_origin_env.split(",") if o.strip()]
+CORS(app, origins=origins)
 
 # Directory / file constants
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,9 +38,6 @@ def allowed_file(filename):
 
 
 def load_pitchers():
-    """
-    Load pitchers from the CSV. Returns (pitchers_dict, errors_list).
-    """
     pitchers = {}
     errors = []
 
@@ -47,43 +45,49 @@ def load_pitchers():
         logging.info("CSV file not found; returning empty pitcher list.")
         return pitchers, errors
 
-    with open(CSV_PATH, newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        header_cols = set(reader.fieldnames or [])
-        missing = REQUIRED_COLUMNS - header_cols
-        if missing:
-            msg = f"CSV is missing required columns: {sorted(list(missing))}"
-            logging.warning(msg)
-            errors.append(msg)
-            return pitchers, errors
+    try:
+        with open(CSV_PATH, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            header_cols = set(reader.fieldnames or [])
+            missing = REQUIRED_COLUMNS - header_cols
+            if missing:
+                msg = f"CSV is missing required columns: {sorted(list(missing))}"
+                logging.warning(msg)
+                errors.append(msg)
+                return pitchers, errors
 
-        for idx, row in enumerate(reader, start=1):
-            name = (row.get("name") or "").strip()
-            team = (row.get("team") or "").strip()
-            handedness = (row.get("handedness") or "").strip()
-            date_str = (row.get("date") or "").strip()
-            pitch_count_raw = (row.get("pitch_count") or "").strip()
+            for idx, row in enumerate(reader, start=1):
+                name = (row.get("name") or "").strip()
+                team = (row.get("team") or "").strip()
+                handedness = (row.get("handedness") or "").strip()
+                date_str = (row.get("date") or "").strip()
+                pitch_count_raw = (row.get("pitch_count") or "").strip()
 
-            if not (name and team and handedness and date_str and pitch_count_raw):
-                logging.warning("Row %s skipped for missing field(s): %s", idx, row)
-                continue
+                if not (name and team and handedness and date_str and pitch_count_raw):
+                    logging.warning("Row %s skipped for missing field(s): %s", idx, row)
+                    continue
 
-            try:
-                pitch_count = int(pitch_count_raw)
-            except ValueError:
-                logging.warning("Row %s has invalid pitch_count '%s'; skipping.", idx, pitch_count_raw)
-                continue
+                try:
+                    pitch_count = int(pitch_count_raw)
+                except ValueError:
+                    logging.warning("Row %s has invalid pitch_count '%s'; skipping.", idx, pitch_count_raw)
+                    continue
 
-            try:
-                if name not in pitchers:
-                    pitchers[name] = Pitcher(name, team, handedness)
-                else:
-                    if not getattr(pitchers[name], "handedness", "") and handedness:
-                        pitchers[name].handedness = handedness
-                pitchers[name].add_game(date_str, pitch_count)
-            except Exception as e:
-                logging.warning("Row %s error parsing/adding game: %s; skipping.", idx, e)
-                continue
+                try:
+                    if name not in pitchers:
+                        p = Pitcher(name, team)
+                        p.handedness = handedness
+                        pitchers[name] = p
+                    else:
+                        if not getattr(pitchers[name], "handedness", "") and handedness:
+                            pitchers[name].handedness = handedness
+                    pitchers[name].add_game(date_str, pitch_count)
+                except Exception as e:
+                    logging.warning("Row %s error parsing/adding game: %s; skipping.", idx, e)
+                    continue
+    except Exception as e:
+        logging.error("Failed to read CSV: %s", e)
+        errors.append(f"Failed to read CSV: {e}")
 
     return pitchers, errors
 
@@ -102,15 +106,6 @@ def health():
 
 @app.route("/api/pitchers", methods=["GET"])
 def get_pitchers():
-    """
-    Returns all pitchers with fatigue and status.
-    Supports query params:
-      - team (substring, case-insensitive)
-      - min_fatigue / max_fatigue (numeric)
-      - sort: fatigue | name | team (default: fatigue)
-      - order: asc | desc (default: desc)
-      - limit: integer
-    """
     pitchers, errors = load_pitchers()
     if errors:
         return jsonify({"errors": errors, "data": []}), 400
@@ -172,7 +167,6 @@ def get_pitcher_by_name(normalized_name):
         return jsonify({"errors": errors}), 400
 
     today = datetime.today()
-    # case-insensitive exact match
     for p in pitchers.values():
         if p.name.lower() == normalized_name.lower():
             fatigue = p.calculate_fatigue(today)
@@ -218,7 +212,10 @@ def upload_csv():
 
         exists = os.path.exists(save_path)
         size = os.path.getsize(save_path) if exists else 0
-        dir_contents = os.listdir(DATA_DIR)
+        try:
+            dir_contents = os.listdir(DATA_DIR)
+        except Exception as e:
+            dir_contents = f"failed to list: {e}"
 
         logging.info(
             "CSV uploaded and saved to %s (original: %s). exists=%s size=%s contents=%s",
@@ -243,7 +240,6 @@ def upload_csv():
         tb = traceback.format_exc()
         logging.error("Exception during upload: %s\n%s", str(e), tb)
         return jsonify({"error": "Failed to save file", "details": str(e)}), 500
-
 
 
 if __name__ == "__main__":
