@@ -190,6 +190,13 @@ def get_pitcher_by_name(normalized_name):
 @app.route("/api/upload", methods=["POST"])
 def upload_csv():
     try:
+        logging.info(
+            "Upload request received. Origin: %s | Files: %s | Form keys: %s",
+            request.headers.get("Origin"),
+            list(request.files.keys()),
+            list(request.form.keys()),
+        )
+
         if "file" not in request.files:
             logging.warning("Upload attempt without 'file' part. Keys: %s", list(request.files.keys()))
             return jsonify({"error": "No file part in request"}), 400
@@ -205,16 +212,38 @@ def upload_csv():
 
         filename = secure_filename(file.filename)
         os.makedirs(DATA_DIR, exist_ok=True)
-        save_path = os.path.join(DATA_DIR, CSV_FILENAME)  # canonical name used by loader
+        save_path = os.path.join(DATA_DIR, CSV_FILENAME)
 
         file.save(save_path)
-        logging.info("CSV uploaded and saved to %s (original: %s)", save_path, filename)
-        return jsonify({"message": "File uploaded successfully"}), 200
+
+        exists = os.path.exists(save_path)
+        size = os.path.getsize(save_path) if exists else 0
+        dir_contents = os.listdir(DATA_DIR)
+
+        logging.info(
+            "CSV uploaded and saved to %s (original: %s). exists=%s size=%s contents=%s",
+            save_path,
+            filename,
+            exists,
+            size,
+            dir_contents,
+        )
+
+        return jsonify({
+            "message": "File uploaded successfully",
+            "debug": {
+                "saved_as": CSV_FILENAME,
+                "exists": exists,
+                "size_bytes": size,
+                "data_dir_contents": dir_contents
+            }
+        }), 200
 
     except Exception as e:
         tb = traceback.format_exc()
         logging.error("Exception during upload: %s\n%s", str(e), tb)
         return jsonify({"error": "Failed to save file", "details": str(e)}), 500
+
 
 
 if __name__ == "__main__":

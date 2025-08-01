@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PitcherCard from './components/PitcherCard';
+
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
 export default function App() {
   const [uploading, setUploading] = useState(false);
@@ -8,47 +10,60 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
 
-  // Upload CSV handler
+  const fetchPitchers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/pitchers`);
+      if (!res.ok) {
+        throw new Error(`Server responded ${res.status}`);
+      }
+      const data = await res.json();
+      setPitchers(data);
+    } catch (err) {
+      setError('Failed to load pitchers. ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPitchers();
+  }, []);
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleUpload = async e => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
     setUploadMsg("");
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await fetch("http://localhost:5000/api/upload", {
+      const res = await fetch(`${API_BASE}/api/upload`, {
         method: "POST",
         body: formData
       });
       const data = await res.json();
       if (res.ok) {
-        setUploadMsg("Upload successful! Reloading data...");
-        setTimeout(() => window.location.reload(), 1200);
+        setUploadMsg("Upload successful! Refreshing data...");
+        await fetchPitchers();
       } else {
-        setUploadMsg(data.error || "Upload failed.");
+        // Prefer more informative message if present
+        setUploadMsg(data.error || data.details || data.message || "Upload failed.");
       }
-    } catch {
-      setUploadMsg("Upload failed. Server error.");
+    } catch (err) {
+      setUploadMsg("Upload failed. " + err.message);
     }
     setUploading(false);
+    // reset input so same file can be reselected if needed
+    e.target.value = "";
   };
-
-  // Fetch pitcher data
-  useEffect(() => {
-    setLoading(true);
-    fetch('https://bullpen-tracker.onrender.com/api/pitchers')
-      .then(res => res.json())
-      .then(data => {
-        setPitchers(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Failed to load pitchers.');
-        setLoading(false);
-      });
-  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -63,8 +78,20 @@ export default function App() {
           className="border border-slate-300 rounded px-2 py-1 w-64 mb-2"
         />
         <div className="flex items-center gap-2">
-          <input type="file" accept=".csv" onChange={handleUpload} className="border border-slate-300 rounded px-2 py-1" />
-          <button disabled={uploading} className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">Upload CSV</button>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleUpload}
+            ref={fileInputRef}
+            className="hidden"
+          />
+          <button
+            onClick={handleUploadClick}
+            disabled={uploading}
+            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition disabled:opacity-50"
+          >
+            {uploading ? 'Uploading...' : 'Upload CSV'}
+          </button>
         </div>
         {uploadMsg && <p className="text-sm text-green-600 mt-2">{uploadMsg}</p>}
       </div>
@@ -74,9 +101,11 @@ export default function App() {
         <p className="text-center text-lg text-red-500">{error}</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
-          {pitchers.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase())).map(pitcher => (
-            <PitcherCard key={pitcher.name} pitcher={pitcher} />
-          ))}
+          {pitchers
+            .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map(pitcher => (
+              <PitcherCard key={pitcher.name} pitcher={pitcher} />
+            ))}
         </div>
       )}
     </div>
